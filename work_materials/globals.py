@@ -19,7 +19,8 @@ job = updater.job_queue
 
 CHAT_WARS_ID = 265204902
 
-admin_ids = [231900398, 116028074, 618831598]
+admin_ids = [231900398]
+access_list = [116028074, 618831598]
 
 processes = []
 guilds = {}

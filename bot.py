@@ -8,11 +8,11 @@ from telegram.error import TelegramError
 from script import script_work
 
 import work_materials.globals as globals
-from work_materials.globals import updater, dispatcher, moscow_tz, processes, conn, cursor, guilds, guild_change_queue
+from work_materials.globals import updater, dispatcher, moscow_tz, processes, conn, cursor, guilds, guild_change_queue, admin_ids
 
 from libs.guild import Guild
 
-from work_materials.filters.guild_filters import filter_is_admin, filter_awaiting_new_guild
+from work_materials.filters.guild_filters import filter_is_admin, filter_awaiting_new_guild, filter_has_access
 
 from bin.service_functions import status
 from bin.guild import add_guild, adding_guild, handling_guild_changes
@@ -48,8 +48,20 @@ def recashe_guilds():
     logging.info("Guilds recashed")
 
 
+def not_allowed(bot, update):
+    mes = update.message
+    title = update.message.chat.title
+    if title is None:
+        title = update.message.chat.username
+    if (mes.text and '@Rock_Centre_Order_bot' in mes.text) or mes.chat_id > 0:
+        bot.send_message(chat_id = admin_ids[0],
+                     text = "Несанкционированная попытка доступа, от @{0}, telegram id = <b>{1}</b>,\n"
+                        "Название чата - <b>{2}</b>, chat id = <b>{3}</b>".format(mes.from_user.username, mes.from_user.id,
+                                                                                title, mes.chat_id), parse_mode = 'HTML')
 
 
+
+dispatcher.add_handler(MessageHandler(~filter_has_access, not_allowed, pass_user_data=False))
 dispatcher.add_handler(CommandHandler('start', start, pass_user_data=True))
 dispatcher.add_handler(CommandHandler('status', status, pass_user_data=False))
 dispatcher.add_handler(CommandHandler('add_guild', add_guild, pass_user_data=True))

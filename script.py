@@ -18,7 +18,7 @@ def script_work():
     start_countdown()
 
     print("started timer")
-    timer = Timer(interval=5, function=update_guild_stats, args=[client]).start()
+    #timer = Timer(interval=5, function=update_guild_stats, args=[client]).start()
 
     admin_client.idle()
 
@@ -83,4 +83,4 @@ def guild_info_handler(event):
             answered = True
             client.remove_event_handler(guild_info_handler)
             return
-script_work()
+#script_work()

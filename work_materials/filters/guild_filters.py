@@ -1,5 +1,5 @@
 from telegram.ext import BaseFilter
-from work_materials.globals import admin_ids, dispatcher, CHAT_WARS_ID
+from work_materials.globals import admin_ids, dispatcher, CHAT_WARS_ID, access_list
 import datetime
 
 
@@ -8,6 +8,15 @@ class FilterIsAdmin(BaseFilter):
         return message.from_user.id in admin_ids
 
 filter_is_admin = FilterIsAdmin()
+
+
+class FilterHasAccess(BaseFilter):
+    def filter(self, message):
+        return message.from_user.id in admin_ids or message.from_user.id in access_list
+
+filter_has_access = FilterHasAccess()
+
+
 
 
 class FilterAwaitingGuildInfo(BaseFilter):
