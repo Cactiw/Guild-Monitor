@@ -65,6 +65,9 @@ def update_guild_stats(client, send):
         time.sleep(random.random()*3.96578)
     end = GuildChange("", 0, end = True, send = send)
     guild_change_queue.put(end)
+    if send:
+        start_countdown()
+        start_updating()
 
 
 def guild_info_handler(event):

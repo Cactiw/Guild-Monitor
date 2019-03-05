@@ -15,7 +15,7 @@ from libs.guild import Guild
 from work_materials.filters.guild_filters import filter_is_admin, filter_awaiting_new_guild, filter_has_access, filter_del_guild
 
 from bin.service_functions import status
-from bin.guild import add_guild, adding_guild, handling_guild_changes, list_guilds, del_guild
+from bin.guild import add_guild, adding_guild, handling_guild_changes, list_guilds, del_guild, recashe_guilds
 
 
 #   Выставляем логгироввание
@@ -33,19 +33,6 @@ def start(bot, update, user_data):
     user_data.clear()
     bot.send_message(chat_id=update.message.chat_id,
                      text="Добро пожаловать! Чтобы начать работу, добавьте гильдию для отслеживания: /add_guild")
-
-
-def recashe_guilds():
-    logging.info("Recaching guilds...")
-    request = "select guild_id, castle, tag, name, lvl, glory, num_players from guilds"
-    cursor.execute(request)
-    guilds.clear()
-    row = cursor.fetchone()
-    while row:
-        current = Guild(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
-        guilds.update({current.tag : current})
-        row = cursor.fetchone()
-    logging.info("Guilds recashed")
 
 
 def not_allowed(bot, update):

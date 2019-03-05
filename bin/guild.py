@@ -1,5 +1,6 @@
 import work_materials.globals as globals
 from work_materials.globals import guilds, cursor, guild_change_queue, moscow_tz, admin_ids, dispatcher
+from libs.guild import Guild
 import time, datetime, traceback, logging
 
 def add_guild(bot, update, user_data):
@@ -39,6 +40,7 @@ def adding_guild(bot, update, user_data):
     bot.send_message(chat_id=mes.chat_id, text="Гильдия <b>{0}</b> успешно добавлена!\n"
                                                "Вы можете отправлять следующие гильдии".format(guild_tag),
                      parse_mode = 'HTML')
+    recashe_guilds()
 
 
 def del_guild(bot, update, user_data):
@@ -95,3 +97,16 @@ def send_results():
         guild.glory = guild.new_glory
         guild.new_glory = None
     dispatcher.bot.send_message(chat_id = admin_ids[0], text = response, parse_mode = "HTML")
+
+
+def recashe_guilds():
+    logging.info("Recaching guilds...")
+    request = "select guild_id, castle, tag, name, lvl, glory, num_players from guilds"
+    cursor.execute(request)
+    guilds.clear()
+    row = cursor.fetchone()
+    while row:
+        current = Guild(row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+        guilds.update({current.tag : current})
+        row = cursor.fetchone()
+    logging.info("Guilds recashed")
