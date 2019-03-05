@@ -12,10 +12,10 @@ from work_materials.globals import updater, dispatcher, moscow_tz, processes, co
 
 from libs.guild import Guild
 
-from work_materials.filters.guild_filters import filter_is_admin, filter_awaiting_new_guild, filter_has_access
+from work_materials.filters.guild_filters import filter_is_admin, filter_awaiting_new_guild, filter_has_access, filter_del_guild
 
 from bin.service_functions import status
-from bin.guild import add_guild, adding_guild, handling_guild_changes
+from bin.guild import add_guild, adding_guild, handling_guild_changes, list_guilds, del_guild
 
 
 #   Выставляем логгироввание
@@ -65,7 +65,9 @@ dispatcher.add_handler(MessageHandler(~filter_has_access, not_allowed, pass_user
 dispatcher.add_handler(CommandHandler('start', start, pass_user_data=True))
 dispatcher.add_handler(CommandHandler('status', status, pass_user_data=False))
 dispatcher.add_handler(CommandHandler('add_guild', add_guild, pass_user_data=True))
+dispatcher.add_handler(CommandHandler('list_guilds', list_guilds, pass_user_data=True))
 dispatcher.add_handler(MessageHandler(filter_awaiting_new_guild, adding_guild, pass_user_data=True))
+dispatcher.add_handler(MessageHandler(filter_del_guild, del_guild, pass_user_data=True))
 
 
 recashe_guilds()

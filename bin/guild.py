@@ -8,6 +8,19 @@ def add_guild(bot, update, user_data):
                      text = "Теперь пришли мне форвард ответа @chatwarsbot на /guild {TAG}")
 
 
+def list_guilds(bot, update, user_data):
+    response = "Отслеживаемые гильдии:\n"
+    request = "select guild_id, castle, tag, name, lvl, glory, num_players from guilds"
+    cursor.execute(request)
+    row = cursor.fetchone()
+    while row:
+        response += "{0}<b>{1}</b> 🏅: {2} 🎖: {3}\nУдалить гильдию: /del_guild_{4}\n\n".format(row[1], row[2], row[4], row[5], row[0])
+        row = cursor.fetchone()
+    bot.send_message(chat_id = update.message.chat_id, text = response, parse_mode = 'HTML')
+
+
+
+
 def adding_guild(bot, update, user_data):
     mes = update.message
     guild_castle = mes.text[0]
@@ -26,6 +39,17 @@ def adding_guild(bot, update, user_data):
     bot.send_message(chat_id=mes.chat_id, text="Гильдия <b>{0}</b> успешно добавлена!\n"
                                                "Вы можете отправлять следующие гильдии".format(guild_tag),
                      parse_mode = 'HTML')
+
+
+def del_guild(bot, update, user_data):
+    try:
+        guild_id = int(update.message.text.split("_")[2])
+    except ValueError:
+        bot.send_message(chat_id = update.message.chat_id, text = "Неверный синтаксис")
+        return
+    request = "delete from guilds where guild_id = %s"
+    cursor.execute(request, (guild_id,))
+    bot.send_message(chat_id = update.message.chat_id, text = "Удаление успешно")
 
 
 def handling_guild_changes():

@@ -30,3 +30,9 @@ class FilterAwaitingGuildInfo(BaseFilter):
 
 filter_awaiting_new_guild = FilterAwaitingGuildInfo()
 
+
+class FilterDelGuild(BaseFilter):
+    def filter(self, message):
+        return message.text.find("/del_guild_") == 0
+
+filter_del_guild = FilterDelGuild()
