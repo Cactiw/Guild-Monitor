@@ -15,6 +15,7 @@ def script_work():
 
     client = admin_client
     admin_client.get_entity("ChatWarsBot")
+    start_updating()
     start_countdown()
 
     print("started timer")
