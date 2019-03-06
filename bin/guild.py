@@ -89,7 +89,7 @@ def send_results():
             battle_time += datetime.timedelta(hours = 8)
     response = "Изменение 🎖глори за битву {0}:\n".format(battle_time.strftime("%D %H:%M"))
     guild_list = list(guilds.values())
-    guild_list.sort(key=lambda guild: guild.new_glory - guild.glory if guild.new_glory is None else -1, reverse=True)
+    guild_list.sort(key=lambda guild: guild.new_glory - guild.glory if guild.new_glory is not None else -1, reverse=True)
     for guild in guild_list:
         if guild.new_glory is None:
             response += "<b>{0}</b>: 🎖???\n".format(guild.tag)
