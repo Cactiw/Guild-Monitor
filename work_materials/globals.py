@@ -18,6 +18,7 @@ dispatcher = updater.dispatcher
 job = updater.job_queue
 
 CHAT_WARS_ID = 265204902
+GUILD_CHAT_ID = -1001377426029
 
 admin_ids = [231900398]
 access_list = [116028074, 618831598]

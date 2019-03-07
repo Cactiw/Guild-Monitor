@@ -1,5 +1,5 @@
 import work_materials.globals as globals
-from work_materials.globals import guilds, cursor, guild_change_queue, moscow_tz, admin_ids, dispatcher
+from work_materials.globals import guilds, cursor, guild_change_queue, moscow_tz, admin_ids, dispatcher, GUILD_CHAT_ID
 from libs.guild import Guild
 import time, datetime, traceback, logging
 
@@ -97,6 +97,8 @@ def send_results():
         guild.glory = guild.new_glory
         guild.new_glory = None
     dispatcher.bot.send_message(chat_id = admin_ids[0], text = response, parse_mode = "HTML")
+    dispatcher.bot.send_message(chat_id = GUILD_CHAT_ID, text = response, parse_mode = "HTML")
+
 
 
 def recashe_guilds():
