@@ -92,8 +92,8 @@ def send_results():
     guild_list.sort(key=lambda guild: guild.new_glory - guild.glory if guild.new_glory is not None else -1, reverse=True)
     for guild in guild_list:
         if guild.new_glory is None:
-            response += "<b>{0}</b>: 🎖???\n".format(guild.tag)
-        response += "<b>{0}</b>: 🎖{1}\n".format(guild.tag, guild.new_glory - guild.glory)
+            response += "{1}<b>{0}</b>: 🎖???\n".format(guild.tag, guild.castle)
+        response += "{2}<b>{0}</b>: 🎖{1}\n".format(guild.tag, guild.new_glory - guild.glory, guild.castle)
         guild.glory = guild.new_glory
         guild.new_glory = None
     dispatcher.bot.send_message(chat_id = admin_ids[0], text = response, parse_mode = "HTML")
