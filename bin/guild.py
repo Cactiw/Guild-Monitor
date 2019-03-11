@@ -98,7 +98,14 @@ def send_results():
         guild.new_glory = None
     dispatcher.bot.send_message(chat_id = admin_ids[0], text = response, parse_mode = "HTML")
     dispatcher.bot.send_message(chat_id = GUILD_CHAT_ID, text = response, parse_mode = "HTML")
+    update_guilds()
 
+
+def update_guilds():
+    for guild in guilds:
+        request = "update guilds set glory = %s, num_players = %s, lvl = %s where tag = %s"
+        cursor.execute(request, (guild.glory, guild.num_players, guild.lvl, guild.tag))
+    logging.info("guilds in database updated")
 
 
 def recashe_guilds():
