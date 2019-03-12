@@ -1,6 +1,6 @@
 from telegram.ext import MessageHandler, CommandHandler, InlineQueryHandler
 
-import traceback, logging, datetime
+import traceback, logging, datetime, threading
 from threading import Thread, Timer
 from multiprocessing import Process, Queue
 from telegram.error import TelegramError
@@ -14,6 +14,7 @@ from libs.guild import Guild
 
 from work_materials.filters.guild_filters import filter_is_admin, filter_awaiting_new_guild, filter_has_access, filter_del_guild
 
+from bin.user_data import loadData, saveData
 from bin.service_functions import status
 from bin.guild import add_guild, adding_guild, handling_guild_changes, list_guilds, del_guild, recashe_guilds
 
@@ -57,7 +58,10 @@ dispatcher.add_handler(MessageHandler(filter_awaiting_new_guild, adding_guild, p
 dispatcher.add_handler(MessageHandler(filter_del_guild, del_guild, pass_user_data=True))
 
 
+loadData()
 recashe_guilds()
+save_user_data = threading.Thread(target=saveData, name="Save User Data")
+save_user_data.start()
 script = Process(target=script_work, args=(), name="Script")
 script.start()
 processes.append(script)

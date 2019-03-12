@@ -1,7 +1,7 @@
 import psycopg2, pytz, tzlocal
 from multiprocessing import Queue
 
-from telegram.ext import Updater, PicklePersistence
+from telegram.ext import Updater
 
 from config import ProductionToken, request_kwargs, psql_creditals
 
@@ -11,8 +11,7 @@ conn = psycopg2.connect("dbname={0} user={1} password={2}".format(psql_creditals
 conn.set_session(autocommit = True)
 cursor = conn.cursor()
 
-my_persistence = PicklePersistence(filename='user_data')
-updater = Updater(token=ProductionToken, request_kwargs=request_kwargs, persistence = my_persistence, use_context=False)
+updater = Updater(token=ProductionToken, request_kwargs=request_kwargs)
 
 dispatcher = updater.dispatcher
 job = updater.job_queue
