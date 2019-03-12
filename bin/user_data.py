@@ -1,6 +1,6 @@
 import work_materials.globals
 import time, pickle
-import logging, sys
+import logging, sys, traceback
 
 log = logging.getLogger("Save load user data")
 
@@ -14,7 +14,7 @@ def loadData():
     except FileNotFoundError:
         logging.error("Data file not found")
     except:
-        logging.error(sys.exc_info()[0])
+        logging.error(traceback.format_exc())
 
 
 def saveData():
@@ -37,4 +37,4 @@ def saveData():
             f.close()
             log.debug("Data write completed\b")
         except:
-            logging.error(sys.exc_info()[0])
+            logging.error(traceback.format_exc())
