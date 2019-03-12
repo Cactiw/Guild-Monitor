@@ -100,7 +100,11 @@ def send_results():
         guild.glory = guild.new_glory
         guild.new_glory = None
     dispatcher.bot.send_message(chat_id = admin_ids[0], text = response, parse_mode = "HTML")
-    dispatcher.bot.send_message(chat_id = GUILD_CHAT_ID, text = response, parse_mode = "HTML")
+    guild_message = dispatcher.bot.send_message(chat_id = GUILD_CHAT_ID, text = response, parse_mode = "HTML")
+    try:
+        dispatcher.bot.pinChatMessage(chat_id=GUILD_CHAT_ID, message_id=guild_message.message_id, disable_notification=True)
+    except Exception:
+        logging.error(traceback.format_exc())
     update_guilds()
 
 
