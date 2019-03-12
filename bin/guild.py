@@ -57,23 +57,26 @@ def del_guild(bot, update, user_data):
 def handling_guild_changes():
     data = guild_change_queue.get()
     while globals.processing and data:
-        tag = data.tag
-        end = data.end
-        if end:
-            if data.send:
-                send_results()
-            else:
-                dispatcher.bot.send_message(chat_id = admin_ids[0], text="Глори гильдий обновлены!")
-            data = guild_change_queue.get()
-            continue
-        guild = guilds.get(tag)
-        if guild is None:
-            logging.error("No guild with tag {0}".format(tag))
-            data = guild_change_queue.get()
-            continue
-        if guild.new_glory:
-            guild.glory = guild.new_glory
-        guild.new_glory = data.glory
+        try:
+            tag = data.tag
+            end = data.end
+            if end:
+                if data.send:
+                    send_results()
+                else:
+                    dispatcher.bot.send_message(chat_id = admin_ids[0], text="Глори гильдий обновлены!")
+                data = guild_change_queue.get()
+                continue
+            guild = guilds.get(tag)
+            if guild is None:
+                logging.error("No guild with tag {0}".format(tag))
+                data = guild_change_queue.get()
+                continue
+            if guild.new_glory:
+                guild.glory = guild.new_glory
+            guild.new_glory = data.glory
+        except Exception:
+            logging.error(traceback.format_exc())
         data = guild_change_queue.get()
 
 
