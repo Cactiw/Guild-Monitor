@@ -74,6 +74,7 @@ def handling_guild_changes():
                 continue
             if guild.new_glory:
                 guild.glory = guild.new_glory
+                print("updated {} {}".format(guild.tag, guild.new_glory))
             guild.new_glory = data.glory
         except Exception:
             logging.error(traceback.format_exc())
@@ -96,7 +97,11 @@ def send_results():
     for guild in guild_list:
         if guild.new_glory is None:
             response += "{1}<b>{0}</b>: 🎖???\n".format(guild.tag, guild.castle)
-        response += "{2}<b>{0}</b>: 🎖{1}\n".format(guild.tag, guild.new_glory - guild.glory, guild.castle)
+        try:
+            response += "{2}<b>{0}</b>: 🎖{1}\n".format(guild.tag, guild.new_glory - guild.glory, guild.castle)
+        except TypeError:
+            response += "{2}<b>{0}</b>: 🎖ERROR\n".format(guild.tag, guild.new_glory - guild.glory, guild.castle)
+            logging.error(traceback.format_exc() + guild.new_glory)
         guild.glory = guild.new_glory
         guild.new_glory = None
     dispatcher.bot.send_message(chat_id = admin_ids[0], text = response, parse_mode = "HTML")
