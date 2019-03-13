@@ -1,4 +1,4 @@
-from telegram.ext import MessageHandler, CommandHandler, InlineQueryHandler
+from telegram.ext import MessageHandler, CommandHandler, InlineQueryHandler, Filters
 
 import traceback, logging, datetime, threading
 from threading import Thread, Timer
@@ -54,8 +54,8 @@ dispatcher.add_handler(CommandHandler('start', start, pass_user_data=True))
 dispatcher.add_handler(CommandHandler('status', status, pass_user_data=False))
 dispatcher.add_handler(CommandHandler('add_guild', add_guild, pass_user_data=True))
 dispatcher.add_handler(CommandHandler('list_guilds', list_guilds, pass_user_data=True))
-dispatcher.add_handler(MessageHandler(filter_awaiting_new_guild, adding_guild, pass_user_data=True))
-dispatcher.add_handler(MessageHandler(filter_del_guild, del_guild, pass_user_data=True))
+dispatcher.add_handler(MessageHandler(Filters.text & filter_awaiting_new_guild, adding_guild, pass_user_data=True))
+dispatcher.add_handler(MessageHandler(Filters.command & filter_del_guild, del_guild, pass_user_data=True))
 
 
 loadData()
