@@ -114,7 +114,8 @@ def send_results():
 
 
 def update_guilds():
-    for guild in guilds:
+    guild_list = list(guilds.values())
+    for guild in guild_list:
         request = "update guilds set glory = %s, num_players = %s, lvl = %s where tag = %s"
         cursor.execute(request, (guild.glory, guild.num_players, guild.lvl, guild.tag))
     logging.info("guilds in database updated")
