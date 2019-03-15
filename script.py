@@ -21,7 +21,7 @@ def script_work():
     start_countdown()
 
     print("started timer")
-    timer = Timer(interval=5, function=update_guild_stats, args=[client, True]).start()
+    #timer = Timer(interval=5, function=update_guild_stats, args=[client, True]).start()
 
     admin_client.idle()
 
