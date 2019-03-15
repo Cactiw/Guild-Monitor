@@ -16,7 +16,7 @@ from work_materials.filters.guild_filters import filter_is_admin, filter_awaitin
 
 from bin.user_data import loadData, saveData
 from bin.service_functions import status
-from bin.guild import add_guild, adding_guild, handling_guild_changes, list_guilds, del_guild, recashe_guilds
+from bin.guild import add_guild, adding_guild, handling_guild_changes, list_guilds, del_guild, recashe_guilds, send_results
 
 
 #   Выставляем логгироввание

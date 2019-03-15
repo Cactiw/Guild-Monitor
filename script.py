@@ -1,11 +1,13 @@
 from telethon import TelegramClient, events
+from telethon.tl.types import PeerChannel
 from config import phone, username, password, api_id, api_hash
-import time, datetime, random, logging
+import time, datetime, random, logging, traceback
 from threading import Timer
 
 from libs.guild import GuildChange
 
-from work_materials.globals import moscow_tz, guilds, CHAT_WARS_ID, guild_change_queue
+from work_materials.globals import moscow_tz, guilds, CHAT_WARS_ID, guild_change_queue, castles, worldtop_castles,\
+    RESULTS_REPORT_CHAT_ID, TEST_CHANNEL_ID
 
 
 def script_work():
@@ -19,7 +21,7 @@ def script_work():
     start_countdown()
 
     print("started timer")
-    #timer = Timer(interval=5, function=update_guild_stats, args=[client]).start()
+    timer = Timer(interval=5, function=update_guild_stats, args=[client, True]).start()
 
     admin_client.idle()
 
@@ -63,12 +65,60 @@ def update_guild_stats(client, send):
         while not answered:
             time.sleep(1)
         answered = False
+        client.remove_event_handler(guild_info_handler)
         time.sleep(random.random()*3.96578)
-    end = GuildChange("", 0, end = True, send = send)
+    try:
+        if send:
+            start_countdown()
+            start_updating()
+        else:
+            client.add_event_handler(worldtop_handler, events.NewMessage)
+            client.send_message(CHAT_WARS_ID, "/worldtop")
+            answered = False
+            while not answered:
+                time.sleep(1)
+            answered = False
+            client.remove_event_handler(worldtop_handler)
+            client.add_event_handler(results_handler, events.NewMessage)
+    except Exception:
+        logging.error(traceback.format_exc())
+    end = GuildChange("", 0, end=True, send=send, additional_info=worldtop_castles)
     guild_change_queue.put(end)
-    if send:
-        start_countdown()
-        start_updating()
+
+
+def worldtop_handler(event):
+    global answered
+    if event.is_private:
+        text = event.message.message
+        #print(event.message)
+        if event.message.from_id == CHAT_WARS_ID and text.find("🏅# 1") == 0 and "🏆 очков" in text:
+            print("updating worldtop")
+            answered = True
+            lines = text.splitlines()
+            glory = 10
+            for line in lines:
+                for castle in castles:
+                    if castle in line:
+                        worldtop_castles.update({castle: glory})
+                glory -= 1
+            print(worldtop_castles)
+
+
+def results_handler(event):
+    text = event.message.message
+    #print(text)
+    #if event.message.to_id == PeerChannel(TEST_CHANNEL_ID):
+    #print(event.message)
+    if event.message.to_id == PeerChannel(RESULTS_REPORT_CHAT_ID):
+        client.remove_event_handler(results_handler)
+        print("received stats...")
+        print(worldtop_castles)
+        for castle in list(worldtop_castles):
+            if "🛡" in text.partition(castle)[2].splitlines()[0]:
+                worldtop_castles.update({castle: -10})
+        print(worldtop_castles)
+        return
+
 
 
 def guild_info_handler(event):

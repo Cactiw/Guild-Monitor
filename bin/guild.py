@@ -61,6 +61,9 @@ def handling_guild_changes():
             tag = data.tag
             end = data.end
             if end:
+                worldtop_castles = data.additional_info
+                globals.worldtop_castles = worldtop_castles
+                print("updating worltop_castles, ", globals.worldtop_castles)
                 if data.send:
                     send_results()
                 else:
@@ -94,14 +97,37 @@ def send_results():
     response = "Изменение 🎖глори за битву {0}:\n".format(battle_time.strftime("%D %H:%M"))
     guild_list = list(guilds.values())
     guild_list.sort(key=lambda guild: guild.new_glory - guild.glory if guild.new_glory is not None else -1, reverse=True)
+    worldtop_castles = sorted(globals.worldtop_castles.items(), key=lambda elem: elem[1], reverse=True)
     for guild in guild_list:
         if guild.new_glory is None:
             response += "{1}<b>{0}</b>: 🎖???\n".format(guild.tag, guild.castle)
+            continue
         try:
-            response += "{2}<b>{0}</b>: 🎖{1}\n".format(guild.tag, guild.new_glory - guild.glory, guild.castle)
+            glory_change = guild.new_glory - guild.glory
+            response += "{2}<b>{0}</b>: 🎖{1}\n".format(guild.tag, glory_change, guild.castle)
+            print(worldtop_castles)
+            if worldtop_castles:
+                relative_glory_change = glory_change / guild.num_players
+                print(guild.tag, relative_glory_change)
+                for i, castle in enumerate(worldtop_castles):
+                    glory_for_castle = castle[1]
+                    print("glory for castle = {}, castle = {}, i = {}".format(glory_for_castle, castle, i))
+                    if glory_for_castle < 0:
+                        response += "Невозможно определить предположительный пин гильдии\n\n"
+                        break
+                    if glory_for_castle <= relative_glory_change:
+                        if i == 0:
+                            response += "Гильдия не могла ходить ниже {}\n\n".format(castle[0])
+                            break
+                        if guild.castle == castle[0]:
+                            continue
+                        response += "Гильдия ходила в {} или выше\n\n".format(castle[0])
+                        break
+
         except TypeError:
-            response += "{2}<b>{0}</b>: 🎖ERROR\n".format(guild.tag, guild.new_glory - guild.glory, guild.castle)
+            response += "{1}<b>{0}</b>: 🎖ERROR\n".format(guild.tag, guild.castle)
             logging.error(traceback.format_exc() + guild.new_glory)
+
         guild.glory = guild.new_glory
         guild.new_glory = None
     dispatcher.bot.send_message(chat_id = admin_ids[0], text = response, parse_mode = "HTML")

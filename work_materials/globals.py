@@ -16,7 +16,12 @@ updater = Updater(token=ProductionToken, request_kwargs=request_kwargs)
 dispatcher = updater.dispatcher
 job = updater.job_queue
 
+castles = ['🍆', '🍁', '☘', '🌹', '🐢', '🦇', '🖤']
+worldtop_castles = {}
+
 CHAT_WARS_ID = 265204902
+RESULTS_REPORT_CHAT_ID = 1391784649
+TEST_CHANNEL_ID = 1353017829
 GUILD_CHAT_ID = -1001377426029
 
 admin_ids = [231900398]
