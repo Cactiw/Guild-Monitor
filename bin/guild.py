@@ -117,11 +117,16 @@ def send_results():
                         break
                     if glory_for_castle <= relative_glory_change:
                         if i == 0:
-                            response += "Гильдия не могла ходить ниже {}\n\n".format(castle[0])
+                            response += "📌 {}\n\n".format(castle[0])
                             break
                         if guild.castle == castle[0]:
-                            continue
-                        response += "Гильдия ходила в {} или выше\n\n".format(castle[0])
+                            if i == 0:
+                                continue
+                            k = i - 1
+                            new_castle = worldtop_castles[k]
+                            response += "📌 {} {}\n\n".format(new_castle[0], "🔼" if k > 0 else "")
+                            break
+                        response += "📌 {} 🔼\n\n".format(castle[0])
                         break
 
         except TypeError:
