@@ -122,13 +122,13 @@ def send_results():
                         k = i - 1
                         new_castle = worldtop_castles[k]
                         if guild.castle == new_castle[0]:
-                            if i == 0:
-                                response += "📌 {} {}\n\n".format(castle[0], "🔼" if k > 0 else "")
+                            if k == 0:
+                                response += "📌 {}\n\n".format(castle[0])
                                 break
                             k -= 1
                             new_castle = worldtop_castles[k]
 
-                        response += "📌 {} 🔼\n\n".format(new_castle[0])
+                        response += "📌 {} {}\n\n".format(new_castle[0], "🔼" if k > 0 else "")
                         break
 
         except TypeError:
