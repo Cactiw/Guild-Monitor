@@ -112,20 +112,22 @@ def send_results():
                     glory_for_castle = castle[1]
                     print("glory for castle = {}, castle = {}, i = {}".format(glory_for_castle, castle, i))
                     if glory_for_castle < 0:
-                        response += "Невозможно определить предположительный пин гильдии\n"
+                        response += "📌 ???\n\n"
                         break
                     if glory_for_castle <= relative_glory_change:
                         if i == 0:
                             response += "📌 {}\n\n".format(castle[0])
                             break
-                        if guild.castle == castle[0]:
-                            if i == 0:
-                                continue
-                            k = i - 1
+                        k = i - 1
+                        new_castle = worldtop_castles[k]
+                        if guild.castle == new_castle[0]:
+                            if k == 0:
+                                response += "📌 {}\n".format(castle[0])
+                                break
+                            k -= 1
                             new_castle = worldtop_castles[k]
-                            response += "📌 {} {}\n".format(new_castle[0], "🔼" if k > 0 else "")
-                            break
-                        response += "📌 {} 🔼\n".format(castle[0])
+
+                        response += "📌 {} {}\n".format(new_castle[0], "🔼" if k > 0 else "")
                         break
 
         except TypeError:
