@@ -103,7 +103,8 @@ def send_results():
             continue
         try:
             glory_change = guild.new_glory - guild.glory
-            response += "<b>{3}:</b> {2}<b>{0}</b>: 🎖{1}".format(guild.tag, glory_change, guild.castle, i)
+            response += "<b>{3}:</b> {2}<code>{0:3<}</code>: 🎖<code>{1:3<}</code>".format(guild.tag, glory_change,
+                                                                                           guild.castle, i)
             print(worldtop_castles)
             if worldtop_castles:
                 relative_glory_change = glory_change / guild.num_players
@@ -122,12 +123,12 @@ def send_results():
                         new_castle = worldtop_castles[k]
                         if guild.castle == new_castle[0]:
                             if k == 0:
-                                response += "📌 {}\n".format(castle[0])
+                                response += " 📌 {}\n".format(castle[0])
                                 break
                             k -= 1
                             new_castle = worldtop_castles[k]
 
-                        response += "📌 {} {}\n".format(new_castle[0], "🔼" if k > 0 else "")
+                        response += " 📌 {} {}\n".format(new_castle[0], "🔼" if k > 0 else "")
                         break
 
         except TypeError:
