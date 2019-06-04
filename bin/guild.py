@@ -3,6 +3,7 @@ from work_materials.globals import guilds, cursor, guild_change_queue, moscow_tz
 from libs.guild import Guild
 import time, datetime, traceback, logging
 
+
 def add_guild(bot, update, user_data):
     user_data.update({"status" : "awaiting_new_guild"})
     bot.send_message(chat_id = update.message.chat_id,
@@ -18,8 +19,6 @@ def list_guilds(bot, update, user_data):
         response += "{0}<b>{1}</b> 🏅: {2} 🎖: {3}\nУдалить гильдию: /del_guild_{4}\n\n".format(row[1], row[2], row[4], row[5], row[0])
         row = cursor.fetchone()
     bot.send_message(chat_id = update.message.chat_id, text = response, parse_mode = 'HTML')
-
-
 
 
 def adding_guild(bot, update, user_data):
@@ -98,13 +97,13 @@ def send_results():
     guild_list = list(guilds.values())
     guild_list.sort(key=lambda guild: guild.new_glory - guild.glory if guild.new_glory is not None else -1, reverse=True)
     worldtop_castles = sorted(globals.worldtop_castles.items(), key=lambda elem: elem[1], reverse=True)
-    for guild in guild_list:
+    for i, guild in enumerate(guild_list):
         if guild.new_glory is None:
-            response += "{1}<b>{0}</b>: 🎖???\n".format(guild.tag, guild.castle)
+            response += "<b>{2}:</b> {1}<b>{0}</b>: 🎖???".format(guild.tag, guild.castle, i)
             continue
         try:
             glory_change = guild.new_glory - guild.glory
-            response += "{2}<b>{0}</b>: 🎖{1}\n".format(guild.tag, glory_change, guild.castle)
+            response += "<b>{3}:</b> {2}<b>{0}</b>: 🎖{1}".format(guild.tag, glory_change, guild.castle, i)
             print(worldtop_castles)
             if worldtop_castles:
                 relative_glory_change = glory_change / guild.num_players
@@ -113,7 +112,7 @@ def send_results():
                     glory_for_castle = castle[1]
                     print("glory for castle = {}, castle = {}, i = {}".format(glory_for_castle, castle, i))
                     if glory_for_castle < 0:
-                        response += "Невозможно определить предположительный пин гильдии\n\n"
+                        response += "Невозможно определить предположительный пин гильдии\n"
                         break
                     if glory_for_castle <= relative_glory_change:
                         if i == 0:
@@ -124,9 +123,9 @@ def send_results():
                                 continue
                             k = i - 1
                             new_castle = worldtop_castles[k]
-                            response += "📌 {} {}\n\n".format(new_castle[0], "🔼" if k > 0 else "")
+                            response += "📌 {} {}\n".format(new_castle[0], "🔼" if k > 0 else "")
                             break
-                        response += "📌 {} 🔼\n\n".format(castle[0])
+                        response += "📌 {} 🔼\n".format(castle[0])
                         break
 
         except TypeError:
