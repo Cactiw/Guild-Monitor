@@ -59,6 +59,7 @@ def handling_guild_changes():
         try:
             tag = data.tag
             end = data.end
+            castle = data.castle
             if end:
                 worldtop_castles = data.additional_info
                 globals.worldtop_castles = worldtop_castles
@@ -77,6 +78,8 @@ def handling_guild_changes():
             if guild.new_glory:
                 guild.glory = guild.new_glory
                 print("updated {} {}".format(guild.tag, guild.new_glory))
+            if castle is not None:
+                guild.castle = castle
             guild.new_glory = data.glory
         except Exception:
             logging.error(traceback.format_exc())
@@ -149,8 +152,8 @@ def send_results():
 def update_guilds():
     guild_list = list(guilds.values())
     for guild in guild_list:
-        request = "update guilds set glory = %s, num_players = %s, lvl = %s where tag = %s"
-        cursor.execute(request, (guild.glory, guild.num_players, guild.lvl, guild.tag))
+        request = "update guilds set glory = %s, num_players = %s, lvl = %s, castle = %s where tag = %s"
+        cursor.execute(request, (guild.glory, guild.num_players, guild.lvl, guild.castle, guild.tag))
     logging.info("guilds in database updated")
 
 

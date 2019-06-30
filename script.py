@@ -131,8 +131,9 @@ def guild_info_handler(event):
         if event.message.from_id == CHAT_WARS_ID and "Commander:" in text and "🎖Glory:" in text:
             guild_tag = text.partition("]")[0].partition("[")[2]
             guild_glory = int(text.partition("🎖Glory: ")[2].split()[0])
+            guild_castle = text[0]
             print("YES")
-            current = GuildChange(guild_tag, guild_glory)
+            current = GuildChange(guild_tag, guild_glory, castle=guild_castle)
             guild_change_queue.put(current)
             answered = True
             client.remove_event_handler(guild_info_handler)

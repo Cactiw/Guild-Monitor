@@ -18,7 +18,7 @@ class Guild:
 
 class GuildChange:
 
-    def __init__(self, guild_tag, guild_new_glory, end = False, send = True, additional_info = None):
+    def __init__(self, guild_tag, guild_new_glory, end = False, send = True, additional_info = None, castle=None):
         self.tag = guild_tag
         self.glory = guild_new_glory
         self.end = end
