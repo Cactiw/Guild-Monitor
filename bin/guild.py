@@ -113,11 +113,11 @@ def send_results():
                     glory_for_castle = castle[1]
                     print("glory for castle = {}, castle = {}, i = {}".format(glory_for_castle, castle, i))
                     if glory_for_castle < 0:
-                        response += "📌 ???\n\n"
+                        response += "📌 ???\n"
                         break
                     if glory_for_castle <= relative_glory_change:
                         if i == 0:
-                            response += "📌 {}\n\n".format(castle[0])
+                            response += "📌 {}\n".format(castle[0])
                             break
                         k = i - 1
                         new_castle = worldtop_castles[k]
