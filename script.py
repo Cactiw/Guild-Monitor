@@ -1,4 +1,4 @@
-from telethon import TelegramClient, events
+from telethon.sync import TelegramClient, events
 from telethon.tl.types import PeerChannel
 from config import phone, username, password, api_id, api_hash
 import time, datetime, random, logging, traceback
@@ -9,21 +9,27 @@ from libs.guild import GuildChange
 from work_materials.globals import moscow_tz, guilds, CHAT_WARS_ID, guild_change_queue, castles, worldtop_castles,\
     RESULTS_REPORT_CHAT_ID, TEST_CHANNEL_ID
 
+import asyncio
+
+loop:asyncio.AbstractEventLoop = None
+
 
 def script_work():
     global client
-    admin_client = TelegramClient(username, api_id, api_hash, update_workers=1, spawn_read_thread=False)
+    global loop
+    loop = asyncio.get_event_loop()
+    admin_client = TelegramClient(username, api_id, api_hash)
     admin_client.start(phone, password)
+    with admin_client as client:
+        client = admin_client
+        admin_client.get_entity("ChatWarsBot")
+        start_updating()
+        start_countdown()
 
-    client = admin_client
-    admin_client.get_entity("ChatWarsBot")
-    start_updating()
-    start_countdown()
+        print("started timer")
+        #timer = Timer(interval=5, function=update_guild_stats, args=[client, True]).start()
 
-    print("started timer")
-    #timer = Timer(interval=5, function=update_guild_stats, args=[client, True]).start()
-
-    admin_client.idle()
+        admin_client.run_until_disconnected()
 
 
 def get_time_remaining(hours = 0, minutes = 0, seconds = 0):
@@ -44,29 +50,32 @@ def start_countdown():
     time_remaining = get_time_remaining(hours=1, minutes=10)
     timer = Timer(interval=time_remaining - random.random() * 13.3790437,
                       function=update_guild_stats, args=[client, True])
+    loop.call_later(delay=time_remaining - random.random() * 13.3790437, callback=update_guild_stats(client, True))
     timer.start()
 
 
 def start_updating():
     time_remaining = get_time_remaining(hours=0, minutes=58)
+    time_remaining = 1
     timer = Timer(interval=time_remaining - random.random() * 19.8356421,
                   function=update_guild_stats, args=[client, False])
+
     timer.start()
 
 
-def update_guild_stats(client, send):
+async def update_guild_stats(client, send):
     global answered
     answered = False
     logging.info("updating_guild_stats")
     guild_list = list(guilds.values())
     for guild in guild_list:
         client.add_event_handler(guild_info_handler, events.NewMessage)
-        client.send_message(CHAT_WARS_ID, "/guild {0}".format(guild.tag))
+        await client.send_message(CHAT_WARS_ID, "/guild {0}".format(guild.tag))
         while not answered:
             time.sleep(1)
         answered = False
         client.remove_event_handler(guild_info_handler)
-        time.sleep(random.random()*3.96578)
+        .sleep(random.random()*3.96578)
     try:
         if send:
             start_countdown()
@@ -86,7 +95,7 @@ def update_guild_stats(client, send):
     guild_change_queue.put(end)
 
 
-def worldtop_handler(event):
+async def worldtop_handler(event):
     global answered
     if event.is_private:
         text = event.message.message
@@ -104,7 +113,7 @@ def worldtop_handler(event):
             print(worldtop_castles)
 
 
-def results_handler(event):
+async def results_handler(event):
     text = event.message.message
     #print(text)
     #if event.message.to_id == PeerChannel(TEST_CHANNEL_ID):
@@ -120,8 +129,7 @@ def results_handler(event):
         return
 
 
-
-def guild_info_handler(event):
+async def guild_info_handler(event):
     global answered
     if event.is_private:
         # print(time.asctime(), '-', event.message)  # optionally log time and message
